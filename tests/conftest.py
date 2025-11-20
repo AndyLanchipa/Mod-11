@@ -20,13 +20,18 @@ def test_db():
 @pytest.fixture
 def db_session(test_db):
     """Fixture for database session"""
-    from app.database import TestingSessionLocal
+    from app.database import Base, TestingSessionLocal
 
     session = TestingSessionLocal()
     try:
         yield session
     finally:
+        session.rollback()
         session.close()
+        # Clean all tables after each test
+        for table in reversed(Base.metadata.sorted_tables):
+            session.execute(table.delete())
+        session.commit()
 
 
 @pytest.fixture
