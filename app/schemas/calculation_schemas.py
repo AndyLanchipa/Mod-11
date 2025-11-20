@@ -21,8 +21,8 @@ class CalculationCreate(BaseModel):
     @validator('b')
     def validate_division_by_zero(cls, v, values):
         """Prevent division by zero"""
-        if ('type' in values and 
-            values['type'] == CalculationType.DIVIDE and v == 0):
+        if ('type' in values and
+                values['type'] == CalculationType.DIVIDE and v == 0):
             raise ValueError('Division by zero is not allowed')
         return v
 
@@ -44,7 +44,7 @@ class CalculationRead(BaseModel):
     user_id: Optional[int]
     created_at: datetime
     updated_at: Optional[datetime]
-    
+
     class Config:
         from_attributes = True
 
@@ -58,8 +58,8 @@ class CalculationUpdate(BaseModel):
     @validator('b')
     def validate_division_by_zero(cls, v, values):
         """Prevent division by zero on updates"""
-        if (v is not None and 'type' in values and 
-            values['type'] == CalculationType.DIVIDE and v == 0):
+        if (v is not None and 'type' in values and
+                values['type'] == CalculationType.DIVIDE and v == 0):
             raise ValueError('Division by zero is not allowed')
         return v
 
