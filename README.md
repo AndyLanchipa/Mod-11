@@ -78,21 +78,30 @@ Once the application is running, visit:
 
 ## Testing
 
+The project includes comprehensive test coverage:
+- **Unit Tests**: Factory pattern operations and Pydantic schema validation (21 tests)
+- **Integration Tests**: Database operations with SQLAlchemy models (10 tests)
+- **Coverage**: 94% code coverage with detailed reporting
+
 ### Run All Tests
 ```bash
-pytest tests/ -v --cov=app --cov-report=html
+# Run all 31 tests with coverage
+pytest tests/ -v --cov=app --cov-report=html --cov-report=term-missing
 ```
 
 ### Run Specific Test Categories
 ```bash
-# Unit tests only
-pytest tests/test_calculation_factory.py tests/test_calculation_schemas.py -v
+# Factory pattern tests (12 tests)
+pytest tests/test_calculation_factory.py -v
 
-# Integration tests only  
+# Schema validation tests (9 tests)
+pytest tests/test_calculation_schemas.py -v
+
+# Integration tests with database (10 tests)
 pytest tests/test_calculation_integration.py -v
 
-# With coverage reporting
-pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=80
+# Quick test run without coverage
+pytest tests/ -v
 ```
 
 ### Test Database Setup
@@ -103,6 +112,13 @@ Tests use SQLite by default for isolation. For PostgreSQL integration testing:
 export TEST_DATABASE_URL="postgresql://testuser:testpass@localhost/testdb"
 pytest tests/test_calculation_integration.py -v
 ```
+
+### Continuous Integration
+All tests run automatically on every push via GitHub Actions:
+- Linting with flake8, black, and isort
+- All 31 unit and integration tests
+- Code coverage reporting (minimum 80%)
+- Docker image build and push to [Docker Hub](https://hub.docker.com/r/andylanchipa/module-11-calculation-model)
 
 ## Architecture
 
@@ -171,16 +187,18 @@ The project includes a comprehensive GitHub Actions workflow:
 
 ## Docker Hub Repository
 
-The application is automatically deployed to Docker Hub:
-- **Latest**: `yourusername/calculation-app:latest`
-- **Tagged**: `yourusername/calculation-app:<commit-sha>`
+The application is automatically deployed to Docker Hub: **[andylanchipa/module-11-calculation-model](https://hub.docker.com/r/andylanchipa/module-11-calculation-model)**
+
+Available tags:
+- **Latest**: `andylanchipa/module-11-calculation-model:latest`
+- **Tagged**: `andylanchipa/module-11-calculation-model:<commit-sha>`
 
 ### Pull and Run
 ```bash
-docker pull yourusername/calculation-app:latest
+docker pull andylanchipa/module-11-calculation-model:latest
 docker run -p 8000:8000 \
   -e DATABASE_URL="postgresql://user:pass@host/db" \
-  yourusername/calculation-app:latest
+  andylanchipa/module-11-calculation-model:latest
 ```
 
 ## Development Guidelines

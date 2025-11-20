@@ -90,8 +90,8 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t calculation-app:${{ github.sha }} .
-        docker tag calculation-app:${{ github.sha }} calculation-app:latest
+        docker build -t module-11-calculation-model:${{ github.sha }} .
+        docker tag module-11-calculation-model:${{ github.sha }} module-11-calculation-model:latest
     
     - name: Run security scan
       run: |
@@ -109,10 +109,10 @@ jobs:
     - name: Push to Docker Hub
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        docker tag calculation-app:latest ${{ secrets.DOCKER_USERNAME }}/calculation-app:latest
-        docker tag calculation-app:latest ${{ secrets.DOCKER_USERNAME }}/calculation-app:${{ github.sha }}
-        docker push ${{ secrets.DOCKER_USERNAME }}/calculation-app:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/calculation-app:${{ github.sha }}
+        docker tag module-11-calculation-model:latest ${{ secrets.DOCKER_USERNAME }}/module-11-calculation-model:latest
+        docker tag module-11-calculation-model:latest ${{ secrets.DOCKER_USERNAME }}/module-11-calculation-model:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/module-11-calculation-model:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/module-11-calculation-model:${{ github.sha }}
 
   deploy:
     needs: test
@@ -124,4 +124,4 @@ jobs:
       run: |
         echo "Deployment would happen here"
         echo "Docker image has been pushed to Docker Hub"
-        echo "Image tag: ${{ secrets.DOCKER_USERNAME }}/calculation-app:${{ github.sha }}"
+        echo "Image tag: ${{ secrets.DOCKER_USERNAME }}/module-11-calculation-model:${{ github.sha }}"
