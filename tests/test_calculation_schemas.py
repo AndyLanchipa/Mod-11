@@ -1,4 +1,5 @@
 import pytest
+
 from pydantic import ValidationError
 
 from app.schemas.calculation_schemas import (
