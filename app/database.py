@@ -1,8 +1,9 @@
 import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -37,6 +38,4 @@ TEST_DATABASE_URL = os.getenv(
     "TEST_DATABASE_URL", "sqlite:///./test_calculation_app.db"
 )
 test_engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=test_engine
-)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)

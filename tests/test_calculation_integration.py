@@ -1,9 +1,10 @@
 import pytest
 from sqlalchemy.orm import Session
+
 from app.models.calculation_model import Calculation
 from app.models.user_model import User
-from app.services.calculation_factory import CalculationFactory
 from app.schemas.calculation_schemas import CalculationCreate
+from app.services.calculation_factory import CalculationFactory
 
 
 class TestCalculationIntegration:
@@ -17,10 +18,7 @@ class TestCalculationIntegration:
 
         # Create database record
         db_calc = Calculation(
-            a=calc_data.a,
-            b=calc_data.b,
-            type=calc_data.type,
-            result=result
+            a=calc_data.a, b=calc_data.b, type=calc_data.type, result=result
         )
         db_session.add(db_calc)
         db_session.commit()
@@ -40,7 +38,7 @@ class TestCalculationIntegration:
         test_user = User(
             username="testuser",
             email="test@example.com",
-            hashed_password="hashedpassword123"
+            hashed_password="hashedpassword123",
         )
         db_session.add(test_user)
         db_session.commit()
@@ -48,11 +46,7 @@ class TestCalculationIntegration:
 
         # Create calculation linked to user
         calc = Calculation(
-            a=20.0,
-            b=4.0,
-            type="Divide",
-            result=5.0,
-            user_id=test_user.id
+            a=20.0, b=4.0, type="Divide", result=5.0, user_id=test_user.id
         )
         db_session.add(calc)
         db_session.commit()
@@ -90,9 +84,7 @@ class TestCalculationIntegration:
         """Test multiple calculations for same user"""
         # Create user
         user = User(
-            username="mathuser",
-            email="math@example.com",
-            hashed_password="password123"
+            username="mathuser", email="math@example.com", hashed_password="password123"
         )
         db_session.add(user)
         db_session.commit()
@@ -102,7 +94,7 @@ class TestCalculationIntegration:
         calculations_data = [
             {"a": 5, "b": 3, "type": "Add"},
             {"a": 10, "b": 2, "type": "Divide"},
-            {"a": 4, "b": 6, "type": "Multiply"}
+            {"a": 4, "b": 6, "type": "Multiply"},
         ]
 
         for calc_data in calculations_data:
@@ -113,16 +105,16 @@ class TestCalculationIntegration:
                 result=CalculationFactory.calculate(
                     calc_data["a"], calc_data["b"], calc_data["type"]
                 ),
-                user_id=user.id
+                user_id=user.id,
             )
             db_session.add(calc)
 
         db_session.commit()
 
         # Verify all calculations are linked to user
-        user_calculations = db_session.query(Calculation).filter(
-            Calculation.user_id == user.id
-        ).all()
+        user_calculations = (
+            db_session.query(Calculation).filter(Calculation.user_id == user.id).all()
+        )
         assert len(user_calculations) == 3
 
         # Verify results
@@ -132,12 +124,7 @@ class TestCalculationIntegration:
 
     def test_calculation_without_user(self, db_session: Session):
         """Test calculation without user relationship (anonymous calculation)"""
-        calc = Calculation(
-            a=7.0,
-            b=3.0,
-            type="Sub",
-            result=4.0
-        )
+        calc = Calculation(a=7.0, b=3.0, type="Sub", result=4.0)
         db_session.add(calc)
         db_session.commit()
         db_session.refresh(calc)
@@ -148,12 +135,7 @@ class TestCalculationIntegration:
 
     def test_calculation_timestamps(self, db_session: Session):
         """Test that timestamps are properly set"""
-        calc = Calculation(
-            a=1.0,
-            b=1.0,
-            type="Add",
-            result=2.0
-        )
+        calc = Calculation(a=1.0, b=1.0, type="Add", result=2.0)
         db_session.add(calc)
         db_session.commit()
         db_session.refresh(calc)
@@ -186,16 +168,16 @@ class TestCalculationIntegration:
         db_session.commit()
 
         # Test query by type
-        add_calcs = db_session.query(Calculation).filter(
-            Calculation.type == "Add"
-        ).all()
+        add_calcs = (
+            db_session.query(Calculation).filter(Calculation.type == "Add").all()
+        )
         assert len(add_calcs) == 1
         assert add_calcs[0].result == 7.0
 
         # Test query by result range
-        high_results = db_session.query(Calculation).filter(
-            Calculation.result > 10
-        ).all()
+        high_results = (
+            db_session.query(Calculation).filter(Calculation.result > 10).all()
+        )
         assert len(high_results) == 2  # 30.0 and 12.0
 
         # Test count operations
@@ -205,9 +187,7 @@ class TestCalculationIntegration:
     def test_calculation_repr_method(self, db_session: Session):
         """Test the string representation of Calculation model"""
         calc = Calculation(a=5.0, b=3.0, type="Add", result=8.0)
-        expected_repr = (
-            "<Calculation(id=None, a=5.0, b=3.0, type='Add', result=8.0)>"
-        )
+        expected_repr = "<Calculation(id=None, a=5.0, b=3.0, type='Add', result=8.0)>"
         assert repr(calc) == expected_repr
 
         db_session.add(calc)

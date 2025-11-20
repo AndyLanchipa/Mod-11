@@ -1,6 +1,7 @@
-import pytest
 import os
 import sys
+
+import pytest
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def test_db():
     """Fixture for test database setup"""
     from app.database import Base, test_engine
+
     Base.metadata.create_all(bind=test_engine)
     yield
     Base.metadata.drop_all(bind=test_engine)
@@ -19,6 +21,7 @@ def test_db():
 def db_session(test_db):
     """Fixture for database session"""
     from app.database import TestingSessionLocal
+
     session = TestingSessionLocal()
     try:
         yield session
@@ -29,22 +32,18 @@ def db_session(test_db):
 @pytest.fixture
 def sample_calculation_data():
     """Fixture providing sample calculation data"""
-    return {
-        "a": 10.0,
-        "b": 5.0,
-        "type": "Add",
-        "result": 15.0
-    }
+    return {"a": 10.0, "b": 5.0, "type": "Add", "result": 15.0}
 
 
 @pytest.fixture
 def test_user(db_session):
     """Create a test user for calculations"""
     from app.models.user_model import User
+
     user = User(
         username="testuser",
         email="test@example.com",
-        hashed_password="hashed_password_here"
+        hashed_password="hashed_password_here",
     )
     db_session.add(user)
     db_session.commit()

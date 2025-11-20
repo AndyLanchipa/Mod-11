@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+
 from app.schemas.calculation_schemas import (
     CalculationCreate,
     CalculationType,
@@ -12,11 +13,7 @@ class TestCalculationSchemas:
 
     def test_calculation_create_valid(self):
         """Test valid calculation creation"""
-        calc_data = {
-            "a": 5.0,
-            "b": 3.0,
-            "type": "Add"
-        }
+        calc_data = {"a": 5.0, "b": 3.0, "type": "Add"}
         calc = CalculationCreate(**calc_data)
         assert calc.a == 5.0
         assert calc.b == 3.0
@@ -43,10 +40,7 @@ class TestCalculationSchemas:
 
     def test_calculation_update_valid(self):
         """Test valid calculation update"""
-        update_data = {
-            "a": 10.0,
-            "type": "Multiply"
-        }
+        update_data = {"a": 10.0, "type": "Multiply"}
         calc_update = CalculationUpdate(**update_data)
         assert calc_update.a == 10.0
         assert calc_update.b is None

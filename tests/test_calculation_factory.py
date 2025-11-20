@@ -1,4 +1,5 @@
 import pytest
+
 from app.services.calculation_factory import CalculationFactory
 
 
@@ -39,7 +40,7 @@ class TestCalculationFactory:
         """Test successful operation retrieval"""
         operation = CalculationFactory.get_operation("Add")
         assert operation is not None
-        assert hasattr(operation, 'calculate')
+        assert hasattr(operation, "calculate")
 
     def test_get_operation_failure(self):
         """Test operation retrieval with invalid type"""

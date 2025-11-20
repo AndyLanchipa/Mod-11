@@ -3,6 +3,7 @@ from typing import Protocol
 
 class CalculationOperation(Protocol):
     """Protocol defining the interface for calculation operations"""
+
     def calculate(self, a: float, b: float) -> float:
         """Perform the calculation operation"""
         ...
@@ -10,24 +11,28 @@ class CalculationOperation(Protocol):
 
 class AddOperation:
     """Addition operation implementation"""
+
     def calculate(self, a: float, b: float) -> float:
         return a + b
 
 
 class SubOperation:
     """Subtraction operation implementation"""
+
     def calculate(self, a: float, b: float) -> float:
         return a - b
 
 
 class MultiplyOperation:
     """Multiplication operation implementation"""
+
     def calculate(self, a: float, b: float) -> float:
         return a * b
 
 
 class DivideOperation:
     """Division operation implementation"""
+
     def calculate(self, a: float, b: float) -> float:
         if b == 0:
             raise ValueError("Division by zero is not allowed")
