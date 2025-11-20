@@ -32,3 +32,27 @@ def sample_calculation_data():
         "type": "Add",
         "result": 15.0
     }
+
+@pytest.fixture
+def test_user(db_session):
+    """Create a test user for calculations"""
+    from app.models.user_model import User
+    user = User(
+        username="testuser",
+        email="test@example.com",
+        hashed_password="hashed_password_here"
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+@pytest.fixture
+def multiple_calculations():
+    """Sample calculation data for batch testing"""
+    return [
+        {"a": 10.0, "b": 5.0, "type": "Add", "expected": 15.0},
+        {"a": 20.0, "b": 8.0, "type": "Sub", "expected": 12.0},
+        {"a": 6.0, "b": 7.0, "type": "Multiply", "expected": 42.0},
+        {"a": 15.0, "b": 3.0, "type": "Divide", "expected": 5.0},
+    ]
