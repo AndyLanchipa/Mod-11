@@ -165,3 +165,44 @@ class TestCalculationIntegration:
         
         assert calc.created_at == original_created_at  # Should not change
         assert calc.updated_at is not None  # Should be set after update
+    
+    def test_calculation_query_operations(self, db_session: Session):
+        """Test various database query operations on calculations"""
+        # Create test data
+        calculations = [
+            Calculation(a=5.0, b=2.0, type="Add", result=7.0),
+            Calculation(a=10.0, b=3.0, type="Multiply", result=30.0),
+            Calculation(a=15.0, b=5.0, type="Divide", result=3.0),
+            Calculation(a=20.0, b=8.0, type="Sub", result=12.0),
+        ]
+        
+        for calc in calculations:
+            db_session.add(calc)
+        db_session.commit()
+        
+        # Test query by type
+        add_calcs = db_session.query(Calculation).filter(Calculation.type == "Add").all()
+        assert len(add_calcs) == 1
+        assert add_calcs[0].result == 7.0
+        
+        # Test query by result range
+        high_results = db_session.query(Calculation).filter(Calculation.result > 10).all()
+        assert len(high_results) == 2  # 30.0 and 12.0
+        
+        # Test count operations
+        total_count = db_session.query(Calculation).count()
+        assert total_count == 4
+    
+    def test_calculation_repr_method(self, db_session: Session):
+        """Test the string representation of Calculation model"""
+        calc = Calculation(a=5.0, b=3.0, type="Add", result=8.0)
+        expected_repr = "<Calculation(id=None, a=5.0, b=3.0, type='Add', result=8.0)>"
+        assert repr(calc) == expected_repr
+        
+        db_session.add(calc)
+        db_session.commit()
+        db_session.refresh(calc)
+        
+        # After saving, id should be present
+        expected_repr_with_id = f"<Calculation(id={calc.id}, a=5.0, b=3.0, type='Add', result=8.0)>"
+        assert repr(calc) == expected_repr_with_id
