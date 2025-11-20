@@ -22,6 +22,8 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # Dependency to get DB session
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -29,7 +31,12 @@ def get_db():
     finally:
         db.close()
 
+
 # Test database setup
-TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///./test_calculation_app.db")
+TEST_DATABASE_URL = os.getenv(
+    "TEST_DATABASE_URL", "sqlite:///./test_calculation_app.db"
+)
 test_engine = create_engine(TEST_DATABASE_URL)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+TestingSessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=test_engine
+)

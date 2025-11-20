@@ -5,6 +5,7 @@ import sys
 # Add the project root to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 @pytest.fixture(scope="session")
 def test_db():
     """Fixture for test database setup"""
@@ -12,6 +13,7 @@ def test_db():
     Base.metadata.create_all(bind=test_engine)
     yield
     Base.metadata.drop_all(bind=test_engine)
+
 
 @pytest.fixture
 def db_session(test_db):
@@ -23,6 +25,7 @@ def db_session(test_db):
     finally:
         session.close()
 
+
 @pytest.fixture
 def sample_calculation_data():
     """Fixture providing sample calculation data"""
@@ -32,6 +35,7 @@ def sample_calculation_data():
         "type": "Add",
         "result": 15.0
     }
+
 
 @pytest.fixture
 def test_user(db_session):
@@ -46,6 +50,7 @@ def test_user(db_session):
     db_session.commit()
     db_session.refresh(user)
     return user
+
 
 @pytest.fixture
 def multiple_calculations():
