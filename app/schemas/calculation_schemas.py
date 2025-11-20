@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class CalculationType(str, Enum):
@@ -21,17 +21,18 @@ class CalculationCreate(BaseModel):
     b: float = Field(..., description="Second operand")
     type: CalculationType = Field(..., description="Type of calculation to perform")
 
-    @validator("b")
-    def validate_division_by_zero(cls, v, values):
+    @model_validator(mode="after")
+    def validate_division_by_zero(self):
         """Prevent division by zero"""
-        if "type" in values and values["type"] == CalculationType.DIVIDE and v == 0:
+        if self.type == CalculationType.DIVIDE and self.b == 0:
             raise ValueError("Division by zero is not allowed")
-        return v
+        return self
 
-    @validator("a", "b")
+    @field_validator("a", "b", mode="before")
+    @classmethod
     def validate_operands(cls, v):
         """Basic validation for operands"""
-        if not isinstance(v, (int, float)):
+        if not isinstance(v, (int, float, str)):
             raise ValueError("Operands must be numeric")
         return float(v)
 
@@ -48,8 +49,7 @@ class CalculationRead(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CalculationUpdate(BaseModel):
@@ -59,22 +59,18 @@ class CalculationUpdate(BaseModel):
     b: Optional[float] = None
     type: Optional[CalculationType] = None
 
-    @validator("b")
-    def validate_division_by_zero(cls, v, values):
+    @model_validator(mode="after")
+    def validate_division_by_zero(self):
         """Prevent division by zero on updates"""
-        if (
-            v is not None
-            and "type" in values
-            and values["type"] == CalculationType.DIVIDE
-            and v == 0
-        ):
+        if self.b is not None and self.type == CalculationType.DIVIDE and self.b == 0:
             raise ValueError("Division by zero is not allowed")
-        return v
+        return self
 
-    @validator("a", "b")
+    @field_validator("a", "b", mode="before")
+    @classmethod
     def validate_operands(cls, v):
         """Basic validation for operands"""
-        if v is not None and not isinstance(v, (int, float)):
+        if v is not None and not isinstance(v, (int, float, str)):
             raise ValueError("Operands must be numeric")
         return float(v) if v is not None else v
 
@@ -90,5 +86,4 @@ class CalculationResponse(BaseModel):
     user_id: Optional[int]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
