@@ -38,7 +38,7 @@ class TestCalculationIntegration:
         test_user = User(
             username="testuser",
             email="test@example.com",
-            hashed_password="hashedpassword123",
+            password_hash="hashedpassword123",
         )
         db_session.add(test_user)
         db_session.commit()
@@ -84,7 +84,7 @@ class TestCalculationIntegration:
         """Test multiple calculations for same user"""
         # Create user
         user = User(
-            username="mathuser", email="math@example.com", hashed_password="password123"
+            username="mathuser", email="math@example.com", password_hash="password123"
         )
         db_session.add(user)
         db_session.commit()
